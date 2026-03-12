@@ -1,0 +1,113 @@
+<view class="container">
+  
+    <view class="header">
+        <view class="title-row">
+            <view class="page-title">
+                <text class="title" style="display:block">Speaking Task 1:</text>
+                <text class="title" style="display:block">Role Play</text>
+            </view>
+          
+            <view id="userDisplay" class="user-wrapper {{isLoggedIn ? '' : 'hidden'}}">
+                <view class="user-pill" catchtap="toggleUserMenu">
+                    <text id="userNameText">{{currentUser}}</text>
+                    
+                    <view class="user-avatar">
+                        <image class="avatar-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgLTk2MCA5NjAgOTYwIiBmaWxsPSIjZmZmZmZmIj48cGF0aCBkPSJNNDgwLTQ4MHEtNjYgMC0xMTMtNDd0LTQ3LTExM3EwLTY2IDQ3LTExM3QxMTMtNDdxNjYgMCAxMTMgNDd0NDcgMTEzcTAgNjYtNDcgMTEzdC0xMTMgNDdaTTE2MC0xNjB2LTExMnEwLTM0IDE3LjUtNjIuNVQyMjQtMzc4cTYyLTMxIDEyNi00Ni41VDQ4MC00NDBxNjYgMCAxMzAgMTUuNVQ3MzYtMzc4cTI5IDE1IDQ2LjUgNDMuNVQ4MDAtMjcydjExMkgxNjBaIi8+PC9zdmc+" mode="aspectFit"></image>
+                    </view>
+                </view>
+                
+                <view id="userDropdown" class="user-dropdown-menu {{showUserMenu ? 'show' : ''}}">
+                    <view class="dropdown-item logout-item" catchtap="showLogoutPopup">Log Out</view>
+                </view>
+            </view>
+        </view>
+          
+        <view class="status-bar">
+            <view class="level-picker">
+                <text>Scenarios</text>
+            </view>
+
+            <view class="sort-wrapper">
+                <view class="level-picker sort-btn" catchtap="toggleSortMenu">
+                    <text>Sort</text>
+                    <text class="sort-arrow">▼</text>
+                </view>
+
+                <view id="sortDropdown" class="dropdown-menu {{showSortMenu ? 'show-menu' : ''}}">
+                    <view class="dropdown-item {{currentSort === 'default' ? 'active-sort' : ''}}" catchtap="applySort" data-type="default">Default</view>
+                    <view class="dropdown-item {{currentSort === 'themes' ? 'active-sort' : ''}}" catchtap="applySort" data-type="themes">Themes</view>
+                    <view class="dropdown-item {{currentSort === 'not-done' ? 'active-sort' : ''}}" catchtap="applySort" data-type="not-done">Not Done</view>
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <scroll-view id="scrollView" class="card-grid" scroll-y="true" bindscroll="handleScroll" scroll-top="{{scrollTop}}" scroll-with-animation> 
+        <block wx:for="{{currentData}}" wx:key="setNumber">
+            <view class="practice-card {{item.isClicked ? 'clicked' : ''}}" bindtap="openChoiceModal" data-setid="{{item.setNumber}}">
+                <text class="card-title-white {{item.isClicked ? 'clicked-text' : ''}}">{{item.title}}</text>
+                <text class="emoji-white">{{item.emoji || "📝"}}</text>
+                
+                <view wx:if="{{item.isClicked && item.completionTime}}" class="timestamp-container">
+                    <text class="time-text {{item.isClicked ? 'clicked-text' : ''}}">{{item.completionTime.date}}</text>
+                    <text class="time-text {{item.isClicked ? 'clicked-text' : ''}}">{{item.completionTime.time}}</text>
+                </view>
+            </view>
+        </block>
+    </scroll-view>
+  
+    <view id="backToTop" class="back-to-top" bindtap="scrollToTop" style="display: {{showBackToTop ? 'flex' : 'none'}};">
+        <text class="back-to-top-text">↑</text>
+    </view>
+
+    <view class="modal-overlay" wx:if="{{showChoiceModal}}" bindtap="closeChoiceModal">
+        <view class="choice-box" catchtap="preventProp">
+            <view class="choice-title">Set {{selectedSetId}}</view>
+            <view class="choice-row">
+                <view class="choice-btn practice-btn" bindtap="goToPractice">
+                    <text class="btn-icon">🎤</text>
+                    <text>Practice</text>
+                </view>
+                <view class="choice-btn results-btn" bindtap="goToResults">
+                    <text class="btn-icon">📊</text>
+                    <text>Results</text>
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <view id="authOverlay" class="auth-overlay" wx:if="{{!isLoggedIn}}">
+        <view class="auth-box">
+            <view id="loginView" wx:if="{{authView === 'login'}}">
+                <view class="auth-title">Welcome Back</view>
+                <input type="text" class="auth-input" placeholder="Username" bindinput="onInputUser" value="{{inputUser}}"/>
+                <input type="password" class="auth-input" placeholder="Password" bindinput="onInputPass" value="{{inputPass}}"/>
+                <view class="auth-error">{{authError}}</view>
+                <view class="auth-btn" bindtap="attemptLogin">Log In</view>
+                <view class="auth-switch">New here? <text bindtap="switchView" data-view="signup">Sign Up</text></view>
+            </view>
+            <view id="signupView" wx:if="{{authView === 'signup'}}">
+                <view class="auth-title">Create Account</view>
+                <input type="text" class="auth-input" placeholder="Create Username" bindinput="onInputUser" value="{{inputUser}}"/>
+                <input type="password" class="auth-input" placeholder="Create Password" bindinput="onInputPass" value="{{inputPass}}"/>
+                <view class="auth-error">{{authError}}</view>
+                <view class="auth-btn" bindtap="attemptSignup">Sign Up</view>
+                <view class="auth-switch">Already have an account? <text bindtap="switchView" data-view="login">Log In</text></view>
+            </view>
+        </view>
+    </view>
+
+    <view id="logoutOverlay" class="auth-overlay" wx:if="{{showLogoutOverlay}}" style="z-index: 3000;">
+        <view class="auth-box" style="padding: 30px; max-width: 320px;">
+            <view class="auth-title" style="font-size: 26px; font-weight: bold; margin-bottom: 15px;">Log Out?</view>
+            <view style="color: #5c78b5; margin-bottom: 25px; font-size: 16px; line-height: 1.5;">
+                Are you sure you want to log out of your account?
+            </view>
+            <view style="display: flex; gap: 15px;">
+                <view class="auth-btn" style="background-color: #e3ecff; color: #3b66ff; margin-top: 0; flex: 1;" bindtap="closeLogoutPopup">Cancel</view>
+                <view class="auth-btn" style="background-color: #ff4d4f; margin-top: 0; flex: 1;" bindtap="confirmLogout">Log Out</view>
+            </view>
+        </view>
+    </view>
+
+</view>

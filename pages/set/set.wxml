@@ -1,0 +1,53 @@
+<view class="container">
+  
+  <view class="header">
+    <view class="title-row" style="width: 100%; display: flex; justify-content: center; align-items: center;">
+        
+        <view id="backBtn" class="back-btn" bindtap="goBack">←</view>
+        
+        <view class="title-col">
+            <text class="title">Set {{setId}}</text>
+            <text class="set-subtitle">{{cardData.title}}</text>
+        </view>
+        
+    </view>
+  </view>
+
+  <view class="content-area">
+    
+    <block wx:if="{{!hasStarted}}">
+        <view class="prepare-text">
+            <view>• There will be one minute for you to prepare</view>
+            <view style="margin-top:20rpx">• You could prepare a piece of paper to write down your ideas</view>
+        </view>
+
+        <view class="big-start-btn" bindtap="startTask">Start</view>
+    </block>
+
+    <block wx:else>
+        <view class="context-box">
+            <view class="roles-section">
+                <view class="role-line"><text style="font-weight:bold;">Your Role:</text> {{cardData.candidateRole}}</view>
+                <view class="role-line"><text style="font-weight:bold;">Examiner's Role:</text> {{cardData.examinerRole}}</view>
+            </view>
+
+            <view class="cue-section">
+                <view class="context-heading">Context</view>
+                <text>{{cardData.cue}}</text>
+            </view>
+
+            <view class="tasks-section">
+                <view class="task-list">
+                    <block wx:for="{{cardData.candidateCueCard}}" wx:key="*this">
+                        <view style="margin-bottom: 5px;">• {{item}}</view>
+                    </block>
+                </view>
+            </view>
+        </view>
+
+        <view class="timer-display" style="color: {{timerColor}}">{{timerText}}</view>
+        <view class="skip-btn" bindtap="skipTimer">Ready to speak</view>
+    </block>
+
+  </view>
+</view>

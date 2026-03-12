@@ -1,0 +1,188 @@
+/* Page Setup */
+page {
+  height: 100%;
+  background-color: #f8faff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f8faff;
+  overflow: hidden; /* Prevents double scrollbars */
+}
+
+/* Scrollable Area */
+.content {
+  flex: 1;
+  height: 0; /* Required for scroll-view to work inside flex */
+  width: 100%;
+}
+
+/* Header */
+.header {
+  padding: 40rpx 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 60rpx; /* From .page-title */
+  font-weight: 800;
+  color: #1a1a1a;
+  text-align: center;
+}
+
+/* --- Loading State --- */
+.loading-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh; /* Centers it nicely on screen */
+}
+
+.spinner {
+  width: 80rpx;
+  height: 80rpx;
+  border: 8rpx solid #e0e0e0;
+  border-top: 8rpx solid #3b66ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 40rpx;
+}
+
+.dots-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+}
+
+/* Text "Analyzing" inside dots container */
+.dots-container text {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #3b66ff;
+}
+
+/* The Dot Animation (Kept your original look) */
+.dot {
+  font-size: 60rpx; 
+  font-weight: 800;
+  color: #3b66ff;
+  opacity: 0;
+  animation: dot-appear 1.5s infinite;
+  line-height: 20rpx;
+  margin-top: -10rpx; /* Slight adjustment to align with text */
+}
+
+.dot:nth-child(2) { animation-delay: 0.0s; } /* First dot (after text) */
+.dot:nth-child(3) { animation-delay: 0.3s; }
+.dot:nth-child(4) { animation-delay: 0.6s; }
+
+.sub-text {
+  margin-top: 30rpx;
+  font-size: 28rpx;
+  color: #888;
+  animation: fade-in 1s;
+}
+
+/* --- Result State --- */
+.result-container {
+  padding: 20rpx 40rpx 60rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Result Box (Based on your .analysis-card .card-loaded) */
+.result-box {
+  background-color: white;
+  border-radius: 30rpx;
+  box-shadow: 0 10rpx 40rpx rgba(59, 102, 255, 0.1);
+  width: 90%;
+  padding: 40rpx;
+  transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  border-left: 10rpx solid #3b66ff; /* Added accent from previous design */
+}
+
+/* The Analysis Text (Based on your .analysis-text) */
+.result-text {
+  font-size: 32rpx;
+  line-height: 1.8;
+}
+
+
+.analysis-category {
+  font-size: 38rpx;
+  font-weight: 800;
+  color: #3b66ff;
+  display: block;
+  margin-top: 30rpx;
+  border-bottom: 2rpx solid #e3ecff;
+}
+
+/* Error/No Record Box (Based on your .card-no-record) */
+.error-box {
+  background-color: white;
+  border-radius: 30rpx;
+  box-shadow: 0 10rpx 40rpx rgba(59, 102, 255, 0.1);
+  padding: 50rpx 60rpx;
+  text-align: center;
+  max-width: 80%;
+  
+  /* Text Styles */
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #5c78b5;
+}
+
+/* Buttons (Based on your .home-btn) */
+.button-group {
+  margin-top: 60rpx;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 40rpx;
+}
+
+.btn-primary {
+  width: 280rpx;
+  height: 100rpx;
+  background-color: #3b66ff;
+  color: white;
+  border-radius: 50rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 32rpx;
+  box-shadow: 0 10rpx 20rpx rgba(59, 102, 255, 0.3);
+  border: none; /* Reset default button border */
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+/* --- Keyframe Animations --- */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes text-appear {
+  to { opacity: 1; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dot-appear {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}

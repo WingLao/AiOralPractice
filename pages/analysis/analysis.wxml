@@ -1,0 +1,34 @@
+<view class="container">
+  
+  <scroll-view scroll-y="true" class="content">
+    
+    <view class="header">Performance Report</view>
+
+    <view wx:if="{{isLoading}}" class="loading-box">
+      <view class="spinner"></view>
+      <view class="dots-container">
+        <text>Analyzing</text>
+        <text class="dot">.</text>
+        <text class="dot">.</text>
+        <text class="dot">.</text>
+      </view>
+      <text class="sub-text">This may take a few seconds.</text>
+    </view>
+
+    <view wx:else class="result-container">
+      
+      <view wx:if="{{isNoRecord}}" class="error-box">
+        <text style="white-space: pre-wrap;">{{analysisResult}}</text>
+      </view>
+
+      <view wx:else class="result-box">
+        <rich-text nodes="{{analysisResult}}" user-select="{{true}}"></rich-text>
+      </view>
+
+      <view class="button-group">
+        <button class="btn-primary" bindtap="goHome">Back to Home</button>
+      </view>
+
+    </view>
+  </scroll-view>
+</view>

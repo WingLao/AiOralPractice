@@ -1,0 +1,313 @@
+/* Core Layout */
+page {
+  height: 100%;
+  overflow: hidden;
+  background-color: #f8faff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  box-sizing: border-box;
+  padding: 10rpx 30rpx 20rpx 30rpx; 
+}
+
+/* Header */
+.header {
+  flex-shrink: 0;
+  z-index: 10;
+  background-color: #f8faff;
+  padding-bottom: 10rpx;
+}
+
+.title-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  min-height: 100rpx; 
+}
+
+.page-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: -10rpx; 
+}
+
+.title {
+  font-size: 48rpx; 
+  font-weight: 800;
+  color: #1a1a1a;
+  display: block;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* User Profile */
+.user-wrapper {
+  position: absolute;
+  right: 0;
+  top: 50rpx;  /* Changed from 50rpx to 10rpx (Moves it up) */
+  transform: none; 
+  z-index: 50;
+}
+
+.user-pill {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  padding: 8rpx 16rpx;
+  border-radius: 40rpx;
+  box-shadow: 0 4rpx 12rpx rgba(59, 102, 255, 0.1);
+}
+
+/* Container: Defines the blue circle */
+.user-avatar {
+  width: 60rpx;         /* Circle Container Width */
+  height: 60rpx;        /* Circle Container Height */
+  border-radius: 50%;
+  background-color: #3b66ff; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 15rpx;
+  
+  /* Critical: Prevents the circle from becoming an oval */
+  flex-shrink: 0; 
+  overflow: hidden;
+}
+
+.avatar-icon {
+  /* Critical: We force the icon to be a small square inside the circle */
+  width: 36rpx; 
+  height: 36rpx;
+  display: block;
+}
+
+#userNameText {
+  font-size: 24rpx;
+  font-weight: bold;
+  color: #1a1a1a;
+  max-width: 90rpx; /* Reduced from 150rpx to stop overlapping */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Adds "..." if name is too long */
+  white-space: nowrap;
+}
+
+.user-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 110%;
+  right: 0;
+  width: 180rpx;
+  background-color: white;
+  border-radius: 15rpx;
+  box-shadow: 0 10rpx 30rpx rgba(0,0,0,0.1);
+  overflow: hidden;
+  flex-direction: column;
+  z-index: 100;
+}
+
+.show { display: flex !important; }
+.hidden { display: none !important; }
+.logout-item { color: #ff4d4f !important; font-weight: bold; padding: 20rpx; text-align: center; font-size: 28rpx;}
+
+/* Status Bar */
+.status-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20rpx;
+  gap: 20rpx;
+}
+
+.level-picker {
+  background: #3b66ff;
+  color: white;
+  padding: 12rpx 30rpx;
+  border-radius: 30rpx;
+  font-size: 28rpx;
+  display: flex;
+  align-items: center;
+}
+
+.sort-wrapper { position: relative; }
+.sort-btn { gap: 10rpx; }
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 110%;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  overflow: hidden;
+  z-index: 100;
+  flex-direction: column;
+}
+
+.show-menu { display: flex !important; }
+
+.dropdown-item {
+  padding: 20rpx;
+  font-size: 28rpx;
+  color: #3b66ff;
+  text-align: center;
+  border-bottom: 1px solid #f0f0f0;
+}
+.active-sort { background-color: #e3ecff !important; color: #3b66ff !important; font-weight: bold; }
+
+/* Card Grid */
+.card-grid {
+  flex: 1;
+  height: 0; 
+  width: 100%;
+  padding-top: 20rpx;
+}
+
+.practice-card {
+  width: 48%;
+  height: 240rpx; 
+  border-radius: 24rpx;
+  margin-bottom: 25rpx;
+  padding: 24rpx;
+  position: relative;
+  box-sizing: border-box;
+  background-color: #3b66ff;
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 2%; 
+  box-shadow: 0 4rpx 10rpx rgba(59, 102, 255, 0.2);
+}
+.practice-card:nth-child(2n) { margin-right: 0; }
+
+.card-title-white {
+  font-size: 30rpx;
+  line-height: 1.4;
+  font-weight: bold;
+  color: white;
+  padding-top: 10rpx;
+  display: block;
+}
+
+/* FIX: EMOJI POSITION (Bottom-Left) */
+.emoji-white { 
+  font-size: 50rpx; 
+  position: absolute;
+  bottom: 20rpx; 
+  left: 20rpx;   /* FIXED: Moved back to LEFT */
+}
+
+/* Clicked State */
+.practice-card.clicked { background-color: #e3ecff !important; }
+.practice-card.clicked .card-title-white { color: #5c78b5 !important; }
+.clicked-text { color: #5c78b5 !important; }
+
+/* Auth & Back to Top */
+.auth-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.3); z-index: 2000;
+  display: flex; justify-content: center; align-items: center;
+  backdrop-filter: blur(3px);
+}
+.auth-box { background-color: white; width: 85%; max-width: 600rpx; padding: 50rpx; border-radius: 30rpx; text-align: center; }
+.auth-title { color: #3b66ff; font-size: 40rpx; margin-bottom: 30rpx; font-weight: bold;}
+.auth-input { width: 100%; height: 80rpx; margin-bottom: 20rpx; border: 2px solid #e3ecff; border-radius: 16rpx; font-size: 28rpx; padding: 0 20rpx; box-sizing: border-box; }
+.auth-btn { background-color: #3b66ff; color: white; padding: 20rpx; border-radius: 16rpx; font-size: 32rpx; font-weight: bold; margin-top: 20rpx; }
+.auth-switch { margin-top: 30rpx; font-size: 26rpx; color: #888; }
+.auth-switch text { color: #3b66ff; font-weight: bold; text-decoration: underline; }
+.auth-error { color: #ff4d4f; font-size: 24rpx; height: 30rpx; }
+
+.back-to-top {
+  position: fixed; bottom: 40rpx; right: 40rpx;
+  width: 80rpx; height: 80rpx; background-color: white;
+  border-radius: 50%; display: flex; justify-content: center; align-items: center;
+  box-shadow: 0 8rpx 20rpx rgba(59, 102, 255, 0.3); z-index: 999;
+}
+.back-to-top-text { color: #3b66ff; font-size: 40rpx; font-weight: bold; }
+
+/* Choice Modal */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.5); 
+  z-index: 500;
+  display: flex; justify-content: center; align-items: center;
+  backdrop-filter: blur(4px);
+}
+
+.choice-box {
+  background-color: white;
+  width: 80%;
+  border-radius: 30rpx;
+  padding: 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.choice-title {
+  font-size: 40rpx;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin-bottom: 40rpx;
+}
+
+.choice-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  gap: 20rpx;
+}
+
+.choice-btn {
+  flex: 1;
+  height: 200rpx;
+  border-radius: 20rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 30rpx;
+  color: white;
+  box-shadow: 0 10rpx 20rpx rgba(0,0,0,0.1);
+  transition: transform 0.1s;
+}
+
+.choice-btn:active { transform: scale(0.95); }
+
+.practice-btn { background-color: #3b66ff; }
+.results-btn { background-color: #722ed1; }
+
+.btn-icon { font-size: 60rpx; margin-bottom: 10rpx; }
+
+@keyframes popUp {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Add this to the bottom of the file */
+.timestamp-container {
+  position: absolute;
+  bottom: 20rpx;
+  right: 20rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Aligns text cleanly to the right edge */
+  line-height: 1.3;
+}
+
+.time-text {
+  font-size: 22rpx;
+  font-weight: bold;
+  color: white; /* Will be overridden by .clicked-text to match the title color */
+}

@@ -1,0 +1,96 @@
+<view class="container">
+  
+  <view class="header">
+    <view class="title-row">
+        <view class="back-btn" bindtap="goBackNow">←</view>
+        <view class="page-title">
+            <text class="title">Set {{setId}}</text>
+            <text class="set-subtitle">{{cardData.title}}</text>
+        </view>
+    </view>
+  </view>
+
+  <view class="content-area">
+    
+    <view class="intro-box" wx:if="{{phase !== 'speaking'}}">
+        <view class="prepare-text" wx:if="{{phase === 'intro1'}}">You will have 2 minutes to speak</view>
+        <view class="prepare-text" wx:if="{{phase === 'intro2'}}">You can start in...</view>
+        <view class="big-countdown" wx:if="{{phase === 'countdown'}}">{{countdownVal}}</view>
+    </view>
+
+    <view class="main-interface" wx:if="{{phase === 'speaking'}}" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+        
+        <view class="status-wrapper">
+            <view class="recording-dot"></view>
+            <text class="status-text">Speaking</text>
+            <view class="dots-container">
+                <text class="dot">.</text>
+                <text class="dot">.</text>
+                <text class="dot">.</text>
+            </view>
+            <text class="speaking-timer">{{elapsedText}}</text>
+        </view>
+
+        <view class="context-box">
+             <view class="roles-section">
+                <view class="role-line"><text style="font-weight:bold;">Your Role:</text> {{cardData.candidateRole}}</view>
+                <view class="role-line"><text style="font-weight:bold;">Examiner's Role:</text> {{cardData.examinerRole}}</view>
+            </view>
+           
+             <view class="cue-section">
+                <view class="context-heading">Context</view>
+                <text>{{cardData.cue}}</text>
+            </view>
+             <view class="tasks-section">
+                <view class="task-list">
+                    <block wx:for="{{cardData.candidateCueCard}}" wx:key="*this">
+                        <view style="margin-bottom: 5px;">• {{item}}</view>
+                    </block>
+                </view>
+            </view>
+        </view>
+
+        <view class="ai-message-area">
+            <block wx:if="{{isThinking}}">
+                <view class="thinking-text">AI is thinking</view>
+                <view class="dots-container" style="margin-left: 10rpx;">
+                    <text class="dot">.</text>
+                    <text class="dot">.</text>
+                    <text class="dot">.</text>
+                </view>
+            </block>
+            <block wx:elif="{{aiQuestion}}">
+                <view class="ai-label">Examiner (AI):</view>
+                <view class="ai-question-text">{{aiQuestion}}</view>
+            </block>
+            <block wx:else>
+                <view class="placeholder-text">Press Next to get a follow-up question</view>
+                <view class="placeholder-text" style="margin-top: 10rpx;">Press Done to see the results</view>
+            </block>
+        </view>
+
+        <view class="button-row">
+            <view class="action-btn next-btn" bindtap="handleNext" hover-class="btn-hover">
+                Next
+            </view>
+            
+            <view class="action-btn done-btn {{isSaved ? 'success' : ''}}" bindtap="handleDone" hover-class="btn-hover">
+                {{isSaved ? 'Saved' : 'Done'}}
+            </view>
+        </view>
+
+    </view>
+
+  </view>
+
+  <view class="popup-overlay" wx:if="{{showReturnPopup}}">
+    <view class="popup-box">
+        <block wx:if="{{isTimeout}}">
+            <text class="popup-text" style="margin-bottom: 20rpx; color: #ff4d4f;">You've reached two minutes.</text>
+        </block>
+        
+        <text class="popup-text">Transferring to analysis in {{returnCountdown}}...</text>
+    </view>
+  </view>
+
+</view>
