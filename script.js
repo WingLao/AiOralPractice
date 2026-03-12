@@ -121,9 +121,126 @@
     });
   }
 
+  function escapeAttribute(value) {
+    return String(value || '').replace(/[&<>"']/g, function (char) {
+      return {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[char];
+    });
+  }
+
+  function sanitizeInlineStyle(styleText) {
+    const allowed = new Set([
+      'background-color',
+      'border',
+      'border-radius',
+      'color',
+      'display',
+      'font-size',
+      'font-weight',
+      'gap',
+      'line-height',
+      'margin',
+      'margin-bottom',
+      'margin-right',
+      'margin-top',
+      'padding',
+      'text-align'
+    ]);
+
+    return String(styleText || '')
+      .split(';')
+      .map(function (rule) { return rule.trim(); })
+      .filter(Boolean)
+      .map(function (rule) {
+        const colonIndex = rule.indexOf(':');
+        if (colonIndex === -1) return '';
+        const property = rule.slice(0, colonIndex).trim().toLowerCase();
+        const value = rule.slice(colonIndex + 1).trim();
+        if (!allowed.has(property) || !value) return '';
+        return `${property}:${value}`;
+      })
+      .filter(Boolean)
+      .join(';');
+  }
+
+  function decodeHtmlEntities(value) {
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = String(value || '');
+    return textarea.value;
+  }
+
+  function sanitizeReportHtml(value) {
+    const original = String(value || '');
+    const raw = /&lt;\/?(div|br|span|b|strong|p|ul|ol|li|em|i|u)\b/i.test(original)
+      ? decodeHtmlEntities(original)
+      : original;
+    if (!raw.trim()) return '';
+
+    const template = document.createElement('template');
+    template.innerHTML = raw;
+
+    const allowedTags = new Set(['B', 'BR', 'DIV', 'EM', 'I', 'LI', 'OL', 'P', 'SPAN', 'STRONG', 'U', 'UL']);
+
+    function sanitizeNode(node) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        return escapeHtml(node.textContent || '');
+      }
+
+      if (node.nodeType !== Node.ELEMENT_NODE) {
+        return '';
+      }
+
+      const tag = node.tagName.toUpperCase();
+      if (tag === 'SCRIPT' || tag === 'STYLE') {
+        return '';
+      }
+      const children = Array.from(node.childNodes).map(sanitizeNode).join('');
+
+      if (!allowedTags.has(tag)) {
+        return children;
+      }
+
+      if (tag === 'BR') {
+        return '<br>';
+      }
+
+      const attrs = [];
+      if (node.hasAttribute('style')) {
+        const style = sanitizeInlineStyle(node.getAttribute('style'));
+        if (style) {
+          attrs.push(` style="${escapeAttribute(style)}"`);
+        }
+      }
+
+      return `<${tag.toLowerCase()}${attrs.join('')}>${children}</${tag.toLowerCase()}>`;
+    }
+
+    return Array.from(template.content.childNodes).map(sanitizeNode).join('');
+  }
+
+  function formatReportSection(value, fallback) {
+    const content = String(value || '').trim();
+    if (!content) {
+      return escapeHtml(fallback).replace(/\n/g, '<br>');
+    }
+
+    const hasMarkup = /<\/?[a-z][\s\S]*>/i.test(content);
+    const hasEscapedMarkup = /&lt;\/?[a-z][\s\S]*&gt;/i.test(content);
+    if (hasMarkup || hasEscapedMarkup) {
+      return sanitizeReportHtml(content);
+    }
+
+    return escapeHtml(content).replace(/\n/g, '<br>');
+  }
+
   function formatReport(data) {
     if (typeof data === 'string') {
-      return data;
+      return formatReportSection(data, '');
     }
 
     if (data.score === '0/3.0' && data.grammar === 'N/A') {
@@ -149,13 +266,13 @@
         <span style="font-size:18px;font-weight:700;">${escapeHtml(data.score || 'N/A')}</span>
       </div>
       <div style="font-size:18px;font-weight:800;color:#3b66ff;margin:14px 0 6px;">Overall Feedback</div>
-      <div>${escapeHtml(data.feedback || 'No feedback')}</div>
+      <div>${formatReportSection(data.feedback, 'No feedback')}</div>
       <div style="font-size:18px;font-weight:800;color:#3b66ff;margin:14px 0 6px;">Pronunciation</div>
-      <div>${escapeHtml(data.pronunciation_feedback || 'No specific comments.')}</div>
+      <div>${formatReportSection(data.pronunciation_feedback, 'No specific comments.')}</div>
       <div style="font-size:18px;font-weight:800;color:#3b66ff;margin:14px 0 6px;">Vocabulary</div>
-      <div>${escapeHtml(data.vocabulary || 'None')}</div>
+      <div>${formatReportSection(data.vocabulary, 'None')}</div>
       <div style="font-size:18px;font-weight:800;color:#3b66ff;margin:14px 0 6px;">Grammar Analysis</div>
-      <div>${escapeHtml(grammar)}</div>
+      <div>${formatReportSection(grammar, 'Great job! Your grammar was excellent, and no major mistakes were detected.')}</div>
     `;
   }
 
@@ -853,7 +970,8 @@
       const key = `report_${state.currentUser}_${setId}`;
       const saved = localStorage.getItem(key);
       if (saved) {
-        state.analysisHtml = saved;
+        state.analysisHtml = sanitizeReportHtml(saved);
+        localStorage.setItem(key, state.analysisHtml);
       } else {
         state.analysisError = 'No previous analysis found for this topic. Go practice first!';
       }
